@@ -7,16 +7,16 @@ import { render } from '@react-email/components';
 export class MailService {
   constructor(private readonly mailer: MailerService) {}
 
-  async sendConfirmation(to: string, confirmationToken: string) {
+  async sendVerification(to: string, confirmationToken: string) {
     const html = await render(
       DefaultMail({
-        title: 'Email confirmation',
+        title: 'Email verification',
         description:
-          'Thank you for registering on our platform. To confirm your email, please follow the link below',
+          'Thank you for registering on our platform. To verify your email, please follow the link below',
         confirmLink: confirmationToken,
       }),
     );
-    await this.send(to, 'Email confirmation', html);
+    await this.send(to, 'Email verification', html);
   }
 
   async sendPasswordRecovery(to: string, confirmLink: string) {

@@ -130,6 +130,22 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ConfirmationTokenScalarFieldEnum = {
+  token: 'token',
+  userId: 'userId',
+  type: 'type',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  refreshToken: 'refreshToken',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -144,10 +160,15 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.ConfirmationTokenType = exports.$Enums.ConfirmationTokenType = {
+  VERIFICATION: 'VERIFICATION',
+  PASSWORD_RECOVERY: 'PASSWORD_RECOVERY'
+};
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  ConfirmationToken: 'ConfirmationToken',
+  Session: 'Session'
 };
 
 /**
