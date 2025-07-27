@@ -1,0 +1,19 @@
+Dockerfile
+.dockerignore
+node_modules
+.next
+.git
+npm-debug.log
+README.md
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+# test files
+__tests__
+jest.config.js
+cypress
+.github
+.vscode
+*.session.sql 
