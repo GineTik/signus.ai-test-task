@@ -2,6 +2,15 @@
 
 `ur.authentication` is a user authentication service that provides user registration, login, and social login functionalities.
 
+## Features
+
+- Login
+- Registration
+- Email verification
+- Refresh token with session control
+- Google login (partially implemented)
+- Caching
+
 ## Project Setup
 
 The project is fully containerized using Docker. To get started, you need to have Docker and Docker Compose installed on your machine.
