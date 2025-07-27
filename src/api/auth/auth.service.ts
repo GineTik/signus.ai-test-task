@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -12,7 +13,8 @@ import { LoginDto } from './dto/login.dto';
 import bcrypt from 'bcrypt';
 import { JwtService, PayloadDto } from '@/shared/jwt';
 import { MailService } from '@/shared/mail';
-import { Prisma } from '@/shared/prisma';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class AuthService {
@@ -20,11 +22,12 @@ export class AuthService {
     private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async login(dto: LoginDto) {
     const user = await this.authRepository.findByEmailOrThrow(dto.email);
-    await this.throwIfPasswordIsInvalid(user.password, dto.password);
+    await this.throwIfPasswordIsInvalid(dto.password, user.password);
 
     if (!user.isVerified) {
       await this.sendVerificationMail(user);
@@ -43,16 +46,15 @@ export class AuthService {
   }
 
   async refreshTokens(user: User, refreshToken: string) {
-    const session = await this.authRepository.findSession(refreshToken);
+    const userId = await this.cacheManager.get<string>(
+      `session-${refreshToken}`,
+    );
 
-    if (!session) {
+    if (!userId || userId !== user.id) {
       throw new BadRequestException('Session not found');
     }
 
-    return this.authRepository.transaction(async (tx) => {
-      await this.authRepository.deleteSession(refreshToken, tx);
-      return await this.generateTokens(user, tx);
-    });
+    return await this.generateTokens(user);
   }
 
   async verifyEmail(token: string) {
@@ -69,14 +71,17 @@ export class AuthService {
     });
   }
 
-  private async generateTokens(user: User, tx?: Prisma.TransactionClient) {
+  private async generateTokens(user: User) {
     const payload: PayloadDto = {
       id: user.id,
       email: user.email,
       isEmailVerified: user.isVerified,
     };
     const tokens = await this.jwtService.generatePair(payload);
-    await this.authRepository.createSession(user.id, tokens.refreshToken, tx);
+    await this.cacheManager.set<string>(
+      `session-${tokens.refreshToken}`,
+      user.id,
+    );
     return tokens;
   }
 
@@ -90,10 +95,13 @@ export class AuthService {
   }
 
   private async throwIfPasswordIsInvalid(
-    userPassword: string,
+    plainTextPassword: string,
     hashedPassword: string,
   ) {
-    const isPasswordValid = await bcrypt.compare(userPassword, hashedPassword);
+    const isPasswordValid = await bcrypt.compare(
+      plainTextPassword,
+      hashedPassword,
+    );
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');

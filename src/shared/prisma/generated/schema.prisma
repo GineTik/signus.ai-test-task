@@ -17,7 +17,6 @@ model User {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   confirmationTokens ConfirmationToken[]
-  sessions           Session[]
 }
 
 model ConfirmationToken {
@@ -27,15 +26,6 @@ model ConfirmationToken {
   type      ConfirmationTokenType
   createdAt DateTime              @default(now())
   updatedAt DateTime              @updatedAt
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  refreshToken String   @unique
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 }
 
 enum ConfirmationTokenType {

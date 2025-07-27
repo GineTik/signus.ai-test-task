@@ -75,4 +75,10 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
     });
   }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('profile')
+  getProfile(@SignedUser() user: User) {
+    return user;
+  }
 }

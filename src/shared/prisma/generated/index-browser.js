@@ -138,14 +138,6 @@ exports.Prisma.ConfirmationTokenScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  refreshToken: 'refreshToken',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -167,8 +159,7 @@ exports.ConfirmationTokenType = exports.$Enums.ConfirmationTokenType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  ConfirmationToken: 'ConfirmationToken',
-  Session: 'Session'
+  ConfirmationToken: 'ConfirmationToken'
 };
 
 /**

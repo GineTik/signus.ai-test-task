@@ -57,30 +57,6 @@ export class AuthRepository {
     });
   }
 
-  async createSession(
-    userId: string,
-    refreshToken: string,
-    tx?: Prisma.TransactionClient,
-  ) {
-    const prisma = tx ?? this.prisma;
-    await prisma.session.create({
-      data: { userId, refreshToken },
-    });
-  }
-
-  async findSession(refreshToken: string) {
-    return this.prisma.session.findUnique({
-      where: { refreshToken },
-    });
-  }
-
-  async deleteSession(refreshToken: string, tx?: Prisma.TransactionClient) {
-    const prisma = tx ?? this.prisma;
-    await prisma.session.delete({
-      where: { refreshToken },
-    });
-  }
-
   async transaction<T>(
     callback: (prisma: Prisma.TransactionClient) => Promise<T>,
   ) {
