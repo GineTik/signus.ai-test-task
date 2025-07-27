@@ -16,4 +16,8 @@ export class AuthRepository {
       data: dto,
     });
   }
+
+  async generateConfirmationToken(userId: string): Promise<string> {
+    // TODO: Implement
+  }
 }
