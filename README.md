@@ -1,98 +1,46 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ur.authentication
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+`ur.authentication` is a user authentication service that provides user registration, login, and social login functionalities.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Project Setup
 
-## Description
+The project is fully containerized using Docker. To get started, you need to have Docker and Docker Compose installed on your machine.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+1.  **Clone the repository:**
 
-## Project setup
+    ```bash
+    git clone <repository-url>
+    cd ur.authentication
+    ```
 
-```bash
-$ npm install
-```
+2.  **Create a `.env` file:**
 
-## Compile and run the project
+    Based on the `.env.example` file or `docker-compose.yml`, create a `.env` file and set up your environment variables. The necessary variables are `DATABASE_URL` and `REDIS_URL`.
 
-```bash
-# development
-$ npm run start
+3.  **Build and run the application:**
 
-# watch mode
-$ npm run start:dev
+    ```bash
+    docker-compose up --build
+    ```
 
-# production mode
-$ npm run start:prod
-```
+    This command will build the Docker images for the application, a Postgres database, and a Redis instance, and then start the services. The application will be available at `http://localhost:3000`.
 
-## Run tests
+## What If
 
-```bash
-# unit tests
-$ npm run test
+### Scaling the Authentication Service
 
-# e2e tests
-$ npm run test:e2e
+To handle a massive increase in traffic, such as 1,000 user registration requests per second and 100,000 user login requests per second, we would need to re-architect our system. We'd move from a single-instance prototype to a distributed, highly available, and scalable architecture.
 
-# test coverage
-$ npm run test:cov
-```
+The core idea would be to introduce a load balancer to distribute incoming requests across multiple stateless instances of the authentication service. For data storage, a relational database like PostgreSQL is a good start, but for this scale, we would need to use a primary/secondary replication setup. The primary database would handle all write operations (like user registrations), while the replicas would handle read operations (like logins). This would significantly reduce the load on the primary database. To further improve read performance for logins, we could implement a caching layer using Redis to cache user sessions and frequently accessed data.
 
-## Deployment
+## Social Login
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+The implementation of social login in this service uses Passport.js with different strategies for each provider (e.g., `passport-google-oauth20`). The general flow is as follows:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+1.  **Initiate Login**: The user clicks a "Login with Google" button on the client-side application.
+2.  **Redirect to Provider**: The backend redirects the user to the social provider's authentication page.
+3.  **User Consent**: The user grants permission for our application to access their basic profile information.
+4.  **Callback**: The provider redirects the user back to a pre-configured callback URL on our service with an authorization code.
+5.  **Token Exchange**: The backend exchanges the authorization code for an access token from the provider.
+6.  **Fetch User Info**: The service uses the access token to fetch the user's profile information from the provider.
+7.  **Authentication**: The service then either finds an existing user with the same email address or creates a new user in the database. Finally, it generates a JWT to send back to the client, completing the login process.
